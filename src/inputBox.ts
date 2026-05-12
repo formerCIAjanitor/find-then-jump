@@ -10,12 +10,11 @@ const subscriptions: Disposable[] = [];
 class InputBox {
 	inputBox: PlatformInputBox;
 	previousInputValue = "";
-	jumpBuffer = "";
 
 	constructor(
 		private props: {
 			textEditor: TextEditor;
-			onInputValueChange(input: string, label: string): void;
+			onInputValueChange(input: string, char: string): void;
 			onCancel(): void;
 		},
 	) {
@@ -29,6 +28,7 @@ class InputBox {
 		inputBox.onDidAccept(this.handleCancel);
 		inputBox.onDidHide(this.handleCancel);
 		inputBox.show();
+
 		return inputBox;
 	};
 
@@ -38,26 +38,12 @@ class InputBox {
 	};
 
 	private handleInputValueChange = (newInputValue: string) => {
-		if (!this.wasBackspacePressed(newInputValue)) {
-			// Backspace pressed — reset buffer and notify with no label
-			this.jumpBuffer = "";
-			this.previousInputValue = newInputValue;
-			this.props.onInputValueChange(this.inputBox.value, "");
-			return;
-		}
+		const charPressed = this.wasBackspacePressed(newInputValue)
+			? this.getCharPressed(newInputValue)
+			: "";
 
-		const newChars = newInputValue.slice(this.previousInputValue.length);
-		this.jumpBuffer += newChars;
 		this.previousInputValue = newInputValue;
-
-		if (this.jumpBuffer.length >= 2) {
-			const label = this.jumpBuffer.slice(0, 2);
-			this.jumpBuffer = "";
-			this.props.onInputValueChange(this.inputBox.value, label);
-		} else {
-			// One char buffered, waiting for second — update search display only
-			this.props.onInputValueChange(this.inputBox.value, "");
-		}
+		this.props.onInputValueChange(this.inputBox.value, charPressed);
 	};
 
 	private wasBackspacePressed = (newInputValue: string) => {

@@ -6,21 +6,9 @@ import type { Association } from "./association";
 import { invariant } from "./utils";
 
 class Controller {
-	static generateValidJumpChars: () => string[] = () => {
-		const chars = [..."neitsrfoupylacdvhgmjwzbqxk"];
-		const labels: string[] = [];
-		// doubles first (nn, ee, ii, ...)
-		for (const c of chars) {
-			labels.push(c + c);
-		}
-		// then pairs (ne, ni, nt, ...)
-		for (const a of chars) {
-			for (const b of chars) {
-				if (a !== b) labels.push(a + b);
-			}
-		}
-		return labels;
-	};
+	static generateValidJumpChars: () => string[] = () => [
+		..."neitsrfoupylacdvhgmjwzbqxk",
+	];
 
 	textEditor?: TextEditor;
 	inputBox?: InputBox;
@@ -58,8 +46,8 @@ class Controller {
 		this.initiate(textEditor);
 	};
 
-	private handleInputValueChange = (input: string, label: string) => {
-		const association = this.associationManager.getAssociation(label);
+	private handleInputValueChange = (input: string, char: string) => {
+		const association = this.associationManager.getAssociation(char);
 
 		if (association) {
 			this.jumpToAssociation(association);
@@ -111,9 +99,11 @@ class Controller {
 
 	private removeExcludedCharsFromAvailableChars = (excludedChars: string[]) => {
 		for (const excludedChar of excludedChars) {
-			const lower = excludedChar.toLowerCase();
+			const lowercaseChar = excludedChar.toLowerCase();
+			const uppercaseChar = excludedChar.toUpperCase();
+
 			this.availableJumpChars = this.availableJumpChars.filter(
-				(label) => !label.includes(lower),
+				(char) => char !== lowercaseChar && char !== uppercaseChar,
 			);
 		}
 	};
