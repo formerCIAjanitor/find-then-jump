@@ -7,7 +7,7 @@ import { invariant } from "./utils";
 
 class Controller {
 	static generateValidJumpChars: () => string[] = () => [
-		..."netsriacpfoyuldhwqNETSRIACPFOYULDHWQ",
+		..."neitsrfoupylacdvhgmjwzbqxk",
 	];
 
 	textEditor?: TextEditor;
