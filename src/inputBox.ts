@@ -50,6 +50,10 @@ class InputBox {
 		return this.previousInputValue.length < newInputValue.length;
 	};
 
+	private getCharPressed(value: string) {
+		return value.charAt(value.length - 1);
+	}
+
 	private handleCancel = () => {
 		this.destroy();
 		this.props.onCancel();
