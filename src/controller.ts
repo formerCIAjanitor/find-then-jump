@@ -103,7 +103,7 @@ class Controller {
 			const uppercaseChar = excludedChar.toUpperCase();
 
 			this.availableJumpChars = this.availableJumpChars.filter(
-				(char) => ![lowercaseChar, uppercaseChar].includes(char),
+				(char) => char !== lowercaseChar && char !== uppercaseChar,
 			);
 		}
 	};
